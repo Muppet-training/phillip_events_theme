@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Events
+Template Name: Events - This Week
 */
 get_header();
 ?>
@@ -22,7 +22,7 @@ get_header();
   <div id="content" class="site-content body_push" onclick="menuCheck(event);">
 
   <section class="page_title">
-    <h1>Events on Today</h1>
+    <h1>Events This Week</h1>
   </section>
   <section class="events">
     <h4 class="date_heading">

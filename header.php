@@ -22,10 +22,4 @@
 
 <body <?php body_class(); ?>>
 <div id="page" class="site">
-	<ul class="main_header" role="navigation">
-    <li><h3>Phillip Island Time</h3></li>
-    <li class="logo"><img class="why_icon" src="<?php echo get_template_directory_uri(); ?>/images/small_star.png)"></li>
-    <li class="nav_button">Search</li>
-    <li class="nav_button">Menu</li>
-  </ul>
-	<div id="content" class="site-content">
+	

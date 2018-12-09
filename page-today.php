@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Events
+Template Name: Events - Today
 */
 get_header();
 ?>
@@ -25,12 +25,10 @@ get_header();
     <h1>Events on Today</h1>
   </section>
   <section class="events">
-    <h4 class="date_heading">
-      <?php echo date('l, F jS'); ?>
-    </h4>
-    <ul>
-      <?php get_events_today(); ?>
-    </ul>
+    <!-- <h4 class="date_heading">
+      <?php // echo date('l, F jS'); ?>
+    </h4> -->
+    <?php get_events_today(); ?>
   </section> 
 
   <?php // get_events() ?>

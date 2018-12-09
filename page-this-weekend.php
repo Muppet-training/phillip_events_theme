@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Events
+Template Name: Events - This Weekend
 */
 get_header();
 ?>
@@ -12,9 +12,9 @@ get_header();
   </ul>
   <div class="event_nav" id="event_nav">
     <ul>
-      <li><a href="<?php echo home_url('events-today'); ?>" class="active">Today</a></li>
+      <li><a href="<?php echo home_url('events-today'); ?>">Today</a></li>
       <li><a href="<?php echo home_url('events-tomorrow'); ?>">Tomorrow</a></li>
-      <li><a href="<?php echo home_url('events-this-weekend'); ?>">This Weekend</a></li>
+      <li><a href="<?php echo home_url('events-this-weekend'); ?>" class="active">This Weekend</a></li>
       <li><a href="<?php echo home_url('events-this-week'); ?>">This Week</a></li>
       <li><a href="<?php echo home_url('events-next-week'); ?>">Next Week</a></li>
     </ul>
@@ -22,18 +22,13 @@ get_header();
   <div id="content" class="site-content body_push" onclick="menuCheck(event);">
 
   <section class="page_title">
-    <h1>Events on Today</h1>
+    <h1>Events This Weekend</h1>
   </section>
   <section class="events">
-    <h4 class="date_heading">
-      <?php echo date('l, F jS'); ?>
-    </h4>
-    <ul>
-      <?php get_events_today(); ?>
-    </ul>
+    <?php get_events_this_weekend(); ?>
   </section> 
 
-  <?php // get_events() ?>
+  <?php  //get_events() ?>
 
   </div>
 
