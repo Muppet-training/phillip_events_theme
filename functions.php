@@ -213,6 +213,18 @@ function early_start($array, $day_stamp){
 	return $res;
 }
 
+function early_week_start($array, $now, $today){
+	$c = 0;
+	foreach ($array as $k => $v){
+		if( $v['start_stamp'] <= $today && $now <= $v['end_stamp']){
+			$res[] = $v;
+			$c = 1;
+		}
+	}
+	if($c == 0){$res = null;}
+	return $res;
+}
+
 function early_weekend_start($array){
 	$c = 0;
 	$sunday = strtotime('next sunday', $array[0]['start_stamp']);
@@ -228,8 +240,109 @@ function early_weekend_start($array){
 			}
 		}	
 	}
-	
+	if($c == 0){$res = null;}
+	return $res;
+}
 
+function today_start($array, $now, $today){
+	
+	// echo '<pre>';
+	// echo print_r($array);
+	// echo '</pre>';
+	// echo $now;
+	$c = 0;
+	foreach ($array as $k => $v){
+		if( $v['start_stamp'] >= $today && $v['start_stamp'] <= strtotime('tomorrow')){
+			$res[] = $v;
+			$c = 1;
+		}	
+	}
+	if($c == 0){
+		$res = null;
+	}
+
+	if($c == 0){$res = null;}
+	return $res;
+}
+
+function tomorrow_start($array, $now){
+	$c = 0;
+	$tomorrow = strtotime('tomorrow'); 
+	$next_day_start = strtotime('+2 day 00:00'); 
+
+	// echo $tomorrow . ' - ' . $next_day_start . ' - ' . $now . '<br/>';
+	
+	foreach ($array as $k => $v){
+		// echo $v['start_stamp'] . '<br/>';
+		
+		if($v['start_stamp'] <= $next_day_start &&  $v['start_stamp'] >= $tomorrow){
+			$res[] = $v;
+			$c = 1;
+		}	
+	}
+	if($c == 0){
+		$res = null;
+	}
+	if($c == 0){$res = null;}
+	return $res;
+}
+
+function monday_start($array){
+	$c = 0;
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 1 ){
+			$res[] = $v;
+			$c = 1;
+		}	
+	}
+	if($c == 0){
+		$res = null;
+	}
+	if($c == 0){$res = null;}
+	return $res;
+}
+
+function tuesday_start($array){
+	$c = 0;
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 2 ){
+			$res[] = $v;
+			$c = 1;
+		}	
+	}
+	if($c == 0){
+		$res = null;
+	}
+	if($c == 0){$res = null;}
+	return $res;
+}
+
+function wednesday_start($array){
+	$c = 0;
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 3 ){
+			$res[] = $v;
+			$c = 1;
+		}	
+	}
+	if($c == 0){
+		$res = null;
+	}
+	if($c == 0){$res = null;}
+	return $res;
+}
+
+function thursday_start($array){
+	$c = 0;
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 4 ){
+			$res[] = $v;
+			$c = 1;
+		}	
+	}
+	if($c == 0){
+		$res = null;
+	}
 	if($c == 0){$res = null;}
 	return $res;
 }
@@ -332,30 +445,31 @@ function get_events_today(){
     ),
 	);
 	$query = new WP_Query( $args );
-	$post_data = queryToArray($query);
-	$sorted = val_sort($post_data, 'start_stamp');
-	if(!empty($sorted)){
-		$early_start = early_start($sorted, $now );
-		$current_day_start = current_day_start($sorted, $now );
-		if($early_start != null){
-			echo '<h4 class="date_heading">';
-			echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on today';
-			echo '</h4>';
-			display_events($early_start); 
+	if ( $query->have_posts() ) {
+		$post_data = queryToArray($query);
+		$sorted = val_sort($post_data, 'start_stamp');
+		if(!empty($sorted)){
+			$early_start = early_start($sorted, $now );
+			$current_day_start = current_day_start($sorted, $now );
+			if($early_start != null){
+				echo '<h4 class="date_heading">';
+				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on today';
+				echo '</h4>';
+				display_events($early_start); 
+			}
+			if($current_day_start != null){
+				echo '<h4 class="date_heading">';
+				echo 'Today ' . date('l, F jS', $current_day_start[0]['start_stamp']);
+				echo '</h4>';
+				display_events($current_day_start); 
+			}
 		}
-		if($current_day_start != null){
-			echo '<h4 class="date_heading">';
-			echo 'Today ' . date('l, F jS', $current_day_start[0]['start_stamp']);
-			echo '</h4>';
-			display_events($current_day_start); 
-		}
+	} else {
+		echo '<p class="no-events">';
+		echo 'We havent found any events on.. </br> If you have an event on or know of an event please let us know to today.<br/>';
+		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
+		echo '</p>';
 	}
-
-	// $post_data = queryToArray($query);
-	// echo '<h4 class="date_heading">';
-	// 	echo date('l, F jS', $post_data[0]['start_stamp']);
-	// echo '</h4>';
-	// display_events($post_data);
 }
 
 function get_events_tomorow(){
@@ -376,23 +490,30 @@ function get_events_tomorow(){
     ),
 	);
 	$query = new WP_Query( $args );
-	$post_data = queryToArray($query);
-	$sorted = val_sort($post_data, 'start_stamp');
-	if(!empty($sorted)){
-		$early_start = early_start($sorted, $tomorrow );
-		$current_day_start = current_day_start($sorted, $tomorrow );
-		if($early_start != null){
-			echo '<h4 class="date_heading">';
-			echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on tomorrow';
-			echo '</h4>';
-			display_events($early_start); 
+	if ( $query->have_posts() ) {
+		$post_data = queryToArray($query);
+		$sorted = val_sort($post_data, 'start_stamp');
+		if(!empty($sorted)){
+			$early_start = early_start($sorted, $tomorrow );
+			$current_day_start = current_day_start($sorted, $tomorrow );
+			if($early_start != null){
+				echo '<h4 class="date_heading">';
+				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on tomorrow';
+				echo '</h4>';
+				display_events($early_start); 
+			}
+			if($current_day_start != null){
+				echo '<h4 class="date_heading">';
+				echo 'Tomorrow ' . date('l, F jS', $current_day_start[0]['start_stamp']);
+				echo '</h4>';
+				display_events($current_day_start); 
+			}
 		}
-		if($current_day_start != null){
-			echo '<h4 class="date_heading">';
-			echo 'Tomorrow ' . date('l, F jS', $current_day_start[0]['start_stamp']);
-			echo '</h4>';
-			display_events($current_day_start); 
-		}
+	} else {
+		echo '<p class="no-events">';
+		echo 'We havent found any events on.. </br> If you have an event on or know of an event please let us know to today.<br/>';
+		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
+		echo '</p>';
 	}
 }
 
@@ -403,8 +524,7 @@ function get_events_this_weekend(){
 	$d = date('N', $today);
 	// echo $d. 'Hello';
 	if($d == 1 || $d == 2 || $d == 3 || $d == 4){
-		
-		$friday = strtotime('last Friday 16:00');
+		$friday = strtotime('next Friday 16:00');
 		$sunday = strtotime('next Sunday 23:59');
 		$meta_query = array(
 			'relation' => 'OR',
@@ -503,7 +623,7 @@ function get_events_this_weekend(){
 			if($early_start != null){
 				echo '<h4 class="date_heading">';
 				// echo 'Weekend Events Starting From: <br/>' . date('l, F jS', $early_start[0]['start_stamp']);
-				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on the weekend';
+				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on this weekend';
 				echo '</h4>';
 				display_events($early_start); 
 			}
@@ -538,9 +658,209 @@ function get_events_this_weekend(){
 				display_events($sunday_start); 
 			}		
 		}
+	} else{
+		echo '<p class="no-events">';
+		echo 'We havent found any events on.. </br> If you have an event on or know of an event please let us know to today.<br/>';
+		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
+		echo '</p>';
 	}
 }
 
+function get_events_this_week(){
+	$today = strtotime('today');
+	$d = date('N', $today);
+	$now = time('now');
+	// echo $d. 'Hello';
+	if($d <= 6 ){
+		$sunday = strtotime('next Sunday 23:59');
+		$meta_query = array(
+			'relation' => 'OR',
+			array( // Now -> Sunday
+				'relation' => 'AND',
+				array(
+					'key'     => 'event_end_timestamp',
+					'compare' => '>=',
+					'value'   => $now,
+				),
+				array(
+					'key'     => 'event_start_timestamp',
+					'compare' => '<=',
+					'value'   => $sunday,
+				),
+			),
+		);
+		$args = array (
+			'post_type' => 'event',
+			'orderby' => 'meta_value',
+    	'order' => 'ASC',
+			'meta_query' => $meta_query
+		);
+	} elseif($d == 7){ // Sunday
+		$sunday_night = strtotime('today 23:59');
+		$meta_query = array(
+			'relation' => 'OR',
+			array( // Pre -> Now
+				'relation' => 'AND',
+				array(
+					'key'     => 'event_end_timestamp',
+					'compare' => '>=',
+					'value'   => $now,
+				),
+				array(
+					'key'     => 'event_start_timestamp',
+					'compare' => '<=',
+					'value'   => $sunday_night,
+				),
+			),
+		);
+		$args = array (
+			'post_type' => 'event',
+			'orderby' => 'meta_value',
+    	'order' => 'ASC',
+			'meta_query' => $meta_query
+				
+		);
+	}
+	
+	$query = new WP_Query( $args );
+	
+	if ( $query->have_posts() ) {
+		$post_data = queryToArray($query);	
+		$sorted = val_sort($post_data, 'start_stamp');
+		$today_int = date('N', $today);
+
+		if(!empty($sorted)) {
+			$early_week_start = early_week_start($sorted, $now, $today);
+			$today_start = today_start($sorted, $now, $today);
+			$tomorrow_start = tomorrow_start($sorted, $now);
+			$monday_start = monday_start($sorted);
+			$tuesday_start = tuesday_start($sorted);
+			$wednesday_start = wednesday_start($sorted);
+			$thursday_start = thursday_start($sorted);
+			$friday_start = friday_start($sorted);
+			$saturday_start = saturday_start($sorted);
+			$sunday_start = sunday_start($sorted);
+
+			$c = 1;
+
+			if($early_week_start != null){
+				echo '<h4 class="date_heading">';
+				echo 'Events starting from ' . date('l', $early_week_start[0]['start_stamp']) . ' and are on Today';
+				echo '</h4>';
+				display_events($early_week_start); 
+			}
+
+			if($today_start != null){
+				echo '<h4 class="date_heading">';
+					echo 'Events starting Today - ' . date('l, F jS', $today_start[0]['start_stamp']);
+				echo '</h4>';
+				display_events($today_start); 
+			}	
+			
+			if($tomorrow_start != null){
+				echo '<h4 class="date_heading">';
+					echo 'Events starting Tomorrow - ' . date('l, F jS', $tomorrow_start[0]['start_stamp']);				
+				echo '</h4>';
+				display_events($tomorrow_start); 
+			}	
+			
+			$mon_int = ( $monday_start != null)? date('N', $monday_start[0]['start_stamp']) : null;
+			$tue_int = ( $tuesday_start != null)? date('N', $tuesday_start[0]['start_stamp']) : null;
+			$wed_int = ( $wednesday_start != null)? date('N', $wednesday_start[0]['start_stamp']) : null;
+			$thu_int = ( $thursday_start != null)? date('N', $thursday_start[0]['start_stamp']) : null;
+			$fri_int = ( $friday_start != null)? date('N', $friday_start[0]['start_stamp']) : null;
+			$sat_int = ( $saturday_start != null)? date('N', $saturday_start[0]['start_stamp']) : null;
+			$sun_int = ( $sunday_start != null)? date('N', $sunday_start[0]['start_stamp']) : null;
+
+			
+			for($x = $today_int; $x <= 7; $x++){
+				if(date('N', $tue_int) != null && $tue_int == $x){
+					for($x = 4; $x <= 7; $x++){
+						if(date('N', $thu_int) != null && $thu_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $thursday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($thursday_start); 
+						}
+						if(date('N', $fri_int) != null && $fri_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $friday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($friday_start); 
+						}
+						if(date('N', $sat_int) != null && $sat_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $saturday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($saturday_start); 
+						}
+						if(date('N', $sun_int) != null && $sun_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $sunday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($sunday_start); 
+						}
+					}
+				}	
+				if(date('N', $wed_int) != null && $wed_int == $x){
+					for($x = 5; $x <= 7; $x++){
+						if(date('N', $fri_int) != null && $fri_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $friday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($friday_start); 
+						}
+						if(date('N', $sat_int) != null && $sat_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $saturday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($saturday_start); 
+						}
+						if(date('N', $sun_int) != null && $sun_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $sunday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($sunday_start); 
+						}
+					}
+				}
+				if(date('N', $thu_int) != null && $thu_int == $x){
+					for($x = 5; $x <= 7; $x++){
+						if(date('N', $sat_int) != null && $sat_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $saturday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($saturday_start); 
+						}
+						if(date('N', $sun_int) != null && $sun_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $sunday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($sunday_start); 
+						}
+					}
+				}	
+				if(date('N', $fri_int) != null && $fri_int == $x){
+					for($x = 6; $x <= 7; $x++){
+						if(date('N', $sun_int) != null && $sun_int == $x){
+							echo '<h4 class="date_heading">';
+								echo date('l, F jS', $sunday_start[0]['start_stamp']);
+							echo '</h4>';
+							display_events($sunday_start); 
+						}
+					}
+				}	
+
+				// If sunday make sure you don't display events for the following monday.. I think you have checked this already
+			}		
+		}
+	} else{
+		echo '<p class="no-events">';
+		echo 'We havent found any events on.. </br> If you have an event on or know of an event please let us know to today.<br/>';
+		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
+		echo '</p>';
+	}
+}
 
 
 
