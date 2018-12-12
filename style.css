@@ -1089,3 +1089,87 @@ h1, h2, h3, h4, h5, h6, p, ul, li, a, span {
   border-top: 1px solid #f1f1f1;
   padding: 20px 0px;
 }
+/* 
+ ---------- 
+ Event Page
+ ----------
+ */
+.events_page {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas: 'details' 'map' 'image' 'description';
+  grid-gap: 10px;
+  row-gap: 30px;
+  padding: 10px;
+}
+@media (min-width: 750px) {
+  .events_page {
+    grid-template-columns: 250px auto;
+    grid-template-rows: auto auto;
+    grid-template-areas: 'map details' 'image description';
+    margin: auto;
+    max-width: 800px;
+    padding: 40px 10px;
+  }
+}
+.events_page section.event_map {
+  grid-area: map;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+}
+.events_page section.event_details {
+  grid-area: details;
+}
+.events_page section.event_details h1 {
+  font-size: 30px;
+}
+.events_page section.event_details p.organiser {
+  color: #999;
+  padding-left: 2px;
+  margin-bottom: 10px;
+}
+.events_page section.event_details p.free {
+  margin-top: 10px;
+  color: #fff;
+  border-radius: 3px;
+  background-color: #ff8600;
+  width: 60px;
+  text-align: center;
+  padding: 5px;
+}
+.events_page section.event_details p.price {
+  margin-top: 10px;
+}
+.events_page section.event_details div {
+  padding: 10px;
+  background-color: #f7f7f7;
+  margin-top: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: auto 100px;
+}
+.events_page section.event_details div section:last-child {
+  display: flex;
+  align-items: center;
+}
+.events_page section.event_details div section:last-child a {
+  padding: 7px 10px;
+  background-color: #ff8600;
+  color: #fff;
+  border-radius: 5px;
+}
+.events_page section.event_image {
+  grid-area: image;
+  height: 360px;
+  overflow: hidden;
+  border-radius: 5px;
+}
+.events_page section.event_description {
+  grid-area: description;
+}
+.events_page section.event_description h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}

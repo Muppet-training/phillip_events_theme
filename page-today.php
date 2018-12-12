@@ -20,20 +20,12 @@ get_header();
     </ul>
   </div>
   <div id="content" class="site-content body_push" onclick="menuCheck(event);">
-
-  <section class="page_title">
-    <h1>Events on Today</h1>
-  </section>
-  <section class="events">
-    <!-- <h4 class="date_heading">
-      <?php // echo date('l, F jS'); ?>
-    </h4> -->
-    <?php get_events_today(); ?>
-  </section> 
-
-  <?php // get_events() ?>
-
+    <section class="page_title">
+      <h1>Events on Today</h1>
+    </section>
+    <section class="events">
+      <?php get_events_today(); ?>
+    </section> 
   </div>
-
 <?php
 get_footer();

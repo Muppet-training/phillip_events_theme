@@ -12,10 +12,10 @@ get_header();
   </ul>
   <div class="event_nav" id="event_nav">
     <ul>
-      <li><a href="<?php echo home_url('events-today'); ?>" class="active">Today</a></li>
+      <li><a href="<?php echo home_url('events-today'); ?>">Today</a></li>
       <li><a href="<?php echo home_url('events-tomorrow'); ?>">Tomorrow</a></li>
       <li><a href="<?php echo home_url('events-this-weekend'); ?>">This Weekend</a></li>
-      <li><a href="<?php echo home_url('events-this-week'); ?>">This Week</a></li>
+      <li><a href="<?php echo home_url('events-this-week'); ?>" class="active">This Week</a></li>
       <li><a href="<?php echo home_url('events-next-week'); ?>">Next Week</a></li>
     </ul>
   </div>

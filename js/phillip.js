@@ -11,7 +11,6 @@ function eventNavToggle(e) {
 	}
 }
 
-w;
 function menuCheck() {
 	var eventNav = document.getElementById('event_nav');
 	if (eventNav.classList.contains('showmenu')) {
