@@ -28,6 +28,7 @@ if ( ! function_exists( 'phillip_dir_setup' ) ) :
 
 		// Add default posts and comments RSS feed links to head.
 		add_theme_support( 'automatic-feed-links' );
+		add_theme_support( 'html-5', array('search-form') );
 
 		/*
 		 * Let WordPress manage the document title.
@@ -45,9 +46,17 @@ if ( ! function_exists( 'phillip_dir_setup' ) ) :
 		add_theme_support( 'post-thumbnails' );
 
 		// This theme uses wp_nav_menu() in one location.
-		register_nav_menus( array(
-			'menu-1' => esc_html__( 'Primary', 'phillip_dir' ),
-		) );
+		// register_nav_menus( array(
+		// 	'event-menu' => esc_html__( 'Event Menu', 'phillip' ),
+		// 	'dir-menu' => esc_html__( 'Directory Menu', 'phillip' ),
+		// 	'quick-menu' => esc_html__( 'Quick Menu', 'phillip' ), 
+		// ) );
+
+		register_nav_menus(array(
+			'event-menu' => 'Event Menu',
+			'dir-menu' => 'Directory Menu', 
+			'quick-menu' => 'Quick Menu',
+		));
 
 		/*
 		 * Switch default core markup for search form, comment form, and comments
@@ -131,6 +140,8 @@ function phillip_dir_scripts() {
 	wp_enqueue_script( 'phillip_dir-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
 
 	wp_enqueue_script( 'phillip_dir-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
+	
+	wp_enqueue_script( 'phillip_google-maps', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyC0Yqv30YyfuQCwLWN4Aq_7VMtn-7isv8Q&callback=initMap', array(), '20151215', true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -422,7 +433,7 @@ function queryToArray($query){
 				'url'						=> get_permalink(get_the_ID()),
 				'start_stamp'   => $post_meta['event_start_timestamp'][0],
 				'end_stamp'     => $post_meta['event_end_timestamp'][0],
-				'image'					=> get_the_post_thumbnail( get_the_ID(), 'medium' ),
+				'image'					=> get_the_post_thumbnail_url(get_the_ID()), 
 				'place'					=> $post_meta['event_place'][0],
 				'town'					=> $post_meta['event_town'][0],
 				'price'					=> $post_meta['event_price'][0],
@@ -431,14 +442,90 @@ function queryToArray($query){
 	return $post_data;
 }
 
-function postToArray($post){
+function queryListingToArray($post){
+	$post_data = array();
 
-	
 	// echo '<pre>';
-	// echo $post->ID . '<br/>';
-	// echo print_r($post);
+	// print_r($post);
 	// echo '</pre>';
+	
+	$post_meta = get_post_meta($post->ID, '', true);
+	// echo '<pre>';
+	// print_r($post_meta);
+	// echo '</pre>';
+	if(
+		isset($post_meta['dir_map'][0]) &&
+		isset($post_meta['o_link'][0])
+	){
+		$post_data = array(
+			'title'   			=> $post->post_title,
+			'id'   					=> $post->ID,
+			'url'						=> get_permalink($post->ID),
+			'image'					=> get_the_post_thumbnail_url($post->ID), 
+			'street'					=> $post_meta['dir_street'][0],
+			'town'					=> $post_meta['dir_town'][0], 
+			'check'					=> $post_meta['dir_travel_check'][0],
+			'summary'				=> $post_meta['dir_summary'][0],
+			'map_link'			=> $post_meta['dir_map'][0],
+			
+			'number'					=> $post_meta['o_number'][0],
+			'email'					=> $post_meta['o_email'][0],
+			'link'					=> $post_meta['o_link'][0],
+		);
+	}else{
+		$post_data = 0;
+	}
 
+
+
+	return $post_data;
+}
+
+function queryFoodToArray($post){
+	$post_data = array();
+
+	// echo '<pre>';
+	// print_r($post);
+	// echo '</pre>';
+	
+	$post_meta = get_post_meta($post->ID, '', true);
+	// echo '<pre>';
+	// print_r($post_meta);
+	// echo '</pre>';
+	if(
+		isset($post_meta['food_map'][0]) &&
+		isset($post_meta['o_link'][0])
+	){
+		$post_data = array(
+			'title'   			=> $post->post_title,
+			'id'   					=> $post->ID,
+			'url'						=> get_permalink($post->ID),
+			'image'					=> get_the_post_thumbnail_url($post->ID), 
+			'street'					=> $post_meta['food_street'][0],
+			'town'					=> $post_meta['food_town'][0], 
+			'check'					=> $post_meta['food_travel_check'][0],
+			'summary'				=> $post_meta['food_summary'][0],
+			'map_link'			=> $post_meta['food_map'][0],
+			
+			'number'				=> $post_meta['o_number'][0],
+			'email'					=> $post_meta['o_email'][0],
+			'link'					=> $post_meta['o_link'][0],
+			
+			'vegan_check'		=> $post_meta['vegan_check'][0],
+			'takeaway_check'=> $post_meta['takeaway_check'][0],
+			'gf_check'			=> $post_meta['gf_check'][0],
+			'alcohol_check'	=> $post_meta['alcohol_check'][0],
+		);
+	}else{
+		$post_data = 0;
+	}
+
+
+
+	return $post_data;
+}
+
+function postToArray($post){
 	$post_data = array();
 	if ( $post != null) {
 		$post_meta = get_post_meta($post->ID, '', true);
@@ -446,18 +533,36 @@ function postToArray($post){
 			// echo '<pre>';
 			// echo print_r($post_meta);
 			// echo '</pre>';
-
-		$post_data = array(
+		if(
+			isset($post_meta['event_start_timestamp'][0]) &&
+			isset($post_meta['event_end_timestamp'][0]) &&
+			isset($post_meta['event_lat'][0]) &&
+			isset($post_meta['event_lng'][0]) &&
+			isset($post_meta['o_name'][0])
+		){
+			$post_data = array(
 				'title'   			=> get_the_title(),
+				'id'   					=> get_the_ID(),
 				'url'						=> get_permalink(get_the_ID()),
 				'start_stamp'   => $post_meta['event_start_timestamp'][0],
 				'end_stamp'     => $post_meta['event_end_timestamp'][0],
-				'image'					=> get_the_post_thumbnail( get_the_ID(), 'medium' ),
+				// 'image'					=> get_the_post_thumbnail( get_the_ID(), 'medium' ),
+				'image'					=> get_the_post_thumbnail_url(get_the_ID()), 
 				'place'					=> $post_meta['event_place'][0],
 				'town'					=> $post_meta['event_town'][0], 
 				'price'					=> $post_meta['event_price'][0],
 				'description'		=> $post_meta['event_description'][0],
-		);
+				'lat'						=> $post_meta['event_lat'][0],
+				'lng'						=> $post_meta['event_lng'][0],
+				
+				'name'					=> $post_meta['o_name'][0],
+				'number'					=> $post_meta['o_number'][0],
+				'email'					=> $post_meta['o_email'][0],
+				'link'					=> $post_meta['o_link'][0],
+			);
+		}else{
+			$post_data = 0;
+		}
 	}
 
 	// echo '<pre>';
@@ -486,7 +591,7 @@ function display_events($event_array){
 				}
 				echo ($post['price'] == 0)?  '<div class="popout free">Free</div>' : null;
 				echo ' <div class="event_image">';
-				echo $post['image'];
+				echo '<img width="100%" height="100%" src="'. $post['image'] . '"/>'; 
 				echo ' </div>';
 				echo '<div class="description">';
 				echo $post['title'];
@@ -524,7 +629,7 @@ function get_events_today(){
 			$current_day_start = current_day_start($sorted, $now );
 			if($early_start != null){
 				echo '<h4 class="date_heading">';
-				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on today';
+				echo 'Events happening now, starting from ' . date('l', $early_start[0]['start_stamp']);
 				echo '</h4>';
 				display_events($early_start); 
 			}
@@ -588,6 +693,52 @@ function get_events_tomorow(){
 	}
 }
 
+function get_events_dates_this_weekend(){
+	$today = strtotime('today');
+	$d = date('N', $today);
+	if($d == 1 || $d == 2 || $d == 3 || $d == 4){
+		$start = date('j M', strtotime('next friday'));
+		$sunday = date('j M', strtotime('next sunday'));
+	} elseif($d == 5 || $d == 6){ // Friday - Sunday
+		$start = date('j M', strtotime('last friday')); 
+		$sunday = date('j M', strtotime('next sunday'));	
+	}elseif($d == 7){
+		$start = date('j M', strtotime('last friday'));
+		$sunday = date('j M', strtotime('today'));
+	}
+	echo $start . ' - ' . $sunday;
+}
+
+function get_events_dates_this_week(){
+	$today = strtotime('today');
+	$d = date('N', $today);
+	if($d == 2 || $d == 3 || $d == 4 || $d == 5 || $d == 6){
+		$start = date('j M', strtotime('last monday'));
+		$sunday = date('j M', strtotime('next sunday'));
+	} elseif($d == 1){ // Friday - Sunday
+		$start = date('j M', strtotime('today'));
+		$sunday = date('j M', strtotime('next sunday'));
+	}elseif($d == 7){
+		$start = date('j M', strtotime('last monday'));
+		$sunday = date('j M', strtotime('today'));
+	}
+	echo $start . ' - ' . $sunday;
+}
+
+function get_events_dates_next_week(){
+	$today = strtotime('today');
+	$d = date('N', $today);
+	
+	if($d == 7){
+		$start = date('j M', strtotime('next Monday'));
+		$following_sunday = date('j M', strtotime('today +1 week 23:59'));
+	}else{
+		$start = date('j M', strtotime('next Monday 00:00'));
+		$following_sunday = date('j M', strtotime('next Sunday +1 week 23:59'));
+	}
+	echo $start . ' - ' . $following_sunday;
+}
+
 function get_events_this_weekend(){
 	$today = strtotime('today');
 	// echo $today. ' - Today <br/>';
@@ -630,7 +781,7 @@ function get_events_this_weekend(){
 				array(
 					'key'     => 'event_end_timestamp',
 					'compare' => '>=',
-					'value'   => $fake_friday,
+					'value'   => $now,
 				),
 				array(
 					'key'     => 'event_start_timestamp',
@@ -693,7 +844,7 @@ function get_events_this_weekend(){
 
 			if($early_start != null){
 				echo '<h4 class="date_heading">';
-				// echo 'Weekend Events Starting From: <br/>' . date('l, F jS', $early_start[0]['start_stamp']);
+				// echo 'Weekend Events Starting From: <br/>' . date('l, F j', $early_start[0]['start_stamp']);
 				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on this weekend';
 				echo '</h4>';
 				display_events($early_start); 
@@ -738,10 +889,12 @@ function get_events_this_weekend(){
 }
 
 function get_events_this_week(){
-	$today = strtotime('today');
+	$today = strtotime('firday');
 	$d = date('N', $today);
 	$now = time('now');
-	// echo $d. 'Hello';
+	// $now = '1546000000';
+	// echo $d. ' day ';
+	// echo $now. ' now '; 
 	if($d <= 6 ){
 		$sunday = strtotime('next Sunday 23:59');
 		$meta_query = array(
@@ -1036,18 +1189,7 @@ function get_events_next_week(){
 	}
 }
 
-
-
-
-
-
-
-
 function get_events(){
-
-
-
-
 	$now = time('now');
 	echo $now;
 	$args = array (
@@ -1057,16 +1199,8 @@ function get_events(){
 	$query = new WP_Query( $args );
 	
 
-	// echo '<pre>';
-	// echo print_r($query);
-	// echo '</pre>';
 
 	while ( $query->have_posts() ) : $query->the_post();
-		// echo '<pre>';
-		// echo print_r($count);
-		// echo print_r($query->the_post());
-		
-		// echo '</pre>';
 		echo '<br/>';
 		the_title();
 
@@ -1131,12 +1265,14 @@ function get_events(){
 	endwhile;
 }
 
-
 function wpb_change_title_text( $title ){
   $screen = get_current_screen();
 
   if  ( 'event' == $screen->post_type ) {
-       $title = 'Add Event Name';
+       $title = 'Add Event Name Here';
+  }
+  if  ( 'listing' == $screen->post_type ) {
+       $title = 'Add Business Name Here';
   }
 
   return $title;
@@ -1144,3 +1280,409 @@ function wpb_change_title_text( $title ){
 
 add_filter( 'enter_title_here', 'wpb_change_title_text' );
 
+function get_icon($slug){
+	switch($slug){
+		case 'retail':
+			echo '#shopping-bag">';
+			break;
+		case 'wellness':
+			echo '#heart">';
+			break;
+		case 'trades':
+			echo '#settings">';
+			break;
+		case 'services':
+			echo '#customer-service">';
+			break;
+		case 'community':
+			echo '#chat">';
+			break;
+		case 'tourism':
+			echo '#penguin">';
+			break;
+		case 'eating-out':
+			echo '#cheers">';
+			break;
+		case 'medical':
+			echo '#first-aid-kit">';
+			break;
+		case 'gallery-studios':
+			echo '#paint-palette-and-brush">';
+			break;
+		case 'transport':
+			echo '#bus-stop">';
+			break;
+		default:
+			echo '#settings">';
+			break;
+	}
+}
+
+function sub_category_menu($cats, $cat){
+	echo '<ul id="'. $cat->slug .'" class="sub_menu">';
+	foreach($cats as $sub_cat){
+		if($cat->cat_ID == $sub_cat->category_parent){
+			echo '<li>';
+				echo '<a id="'.clean($sub_cat->name).'" href="'.get_category_link($sub_cat->term_id).'" class="sub_menu_item">';
+					echo '<div class="menu-item">';
+						// echo '<a href="'. echo get_category_link( $cat->term_id ).'">';
+						echo '<h4>'.$sub_cat->name.'</h4>';
+					echo '</div>';
+				echo '</a>';
+			echo '</li>';
+		}
+	}
+	echo '</ul>';
+
+
+
+}
+
+function get_category_icons(){
+	
+	$args = array(
+		'type'            => 'listing',
+		'orderby'         => 'name',
+		'order'           => 'ASC',
+		'hide_empty'      => 0,
+		// 'parent' 					=> 0
+	);
+	
+	$cats = get_categories($args);
+
+	// echo '<pre>';
+	// echo print_r($cats);
+	// echo '</pre>';
+	// die();
+
+	echo '<ul>';
+	foreach($cats as $cat) {
+		$x = 0;
+		$url = '';
+		// Get Child Categories
+		if($cat->category_parent == 0){
+			foreach($cats as $child){
+				if($x == 0 && $cat->cat_ID == $child->category_parent){
+					$url = $child->slug;
+					$x = 1;
+				}
+
+			}
+
+
+			echo '<li class="menu-list-group" >';
+				// echo '<a href="'.get_category_link($cat->term_id).'" >';
+				echo '<div class="menu_tab" onclick="dir_menu(\''.$cat->slug.'\');">';
+					echo '<div class="svg_wrap">';
+						echo '<svg id="parent_'. clean($cat->name) .'" shape-rendering="geometricPrecision">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						get_icon($cat->slug);
+						echo '</use>';
+						echo '</svg>';
+					echo '</div>';
+					echo '<div class="menu-item" onclick="dir_sub_menu(\''.$cat->slug.'\');">';
+						// echo '<a href="'. $url .'">';
+						// echo '<a href="'. get_category_link( $cat->term_id ).'">';
+						echo '<h4>'.$cat->name.'</h4>';	
+						// echo '</a>'; 
+					echo '</div>';
+				echo '</div>';
+			sub_category_menu($cats, $cat);
+			echo '</li>';
+		}
+	}
+	echo '</ul>';
+}
+
+function get_category_listings($category){
+
+	// var_dump($category);
+
+	$args = array(
+		'posts_per_page'   => -1,
+		'category'         => $category,
+		'orderby'          => 'name',
+		'order'            => 'ASC',
+		'post_type'        => 'listing'
+	);
+	$posts = get_posts( $args );
+
+		// echo '<pre>';
+		// print_r($posts);
+		// echo '</pre>';
+
+	if($posts){
+
+	foreach( $posts as $post ){
+		$post_array = queryListingToArray($post);
+		echo '<li id="contact" onclick="contact_business();">';
+			echo '<div class="promo_image">';
+				echo '<img src="'.$post_array['image'].'" alt="Listing Image"/>';
+			echo '</div>';
+			echo '<div class="promo_content">';
+				echo '<h3 id="c_name">'.$post_array['title'].'</h3>';
+				echo '<span id="c_id">'.$post_array['id'].'</span>';
+				echo '<div class="link_line"><a class="link_line_phone" href="tel:'.$post_array['number'].'">'.$post_array['number'].'</a><a id="c_oemail" href="mailto:'.$post_array['email'].'">'.$post_array['email'].'</a></div>';
+				echo '<p>'.$post_array['summary'].'</p>';
+				if($post_array['check'] == 1){
+					$class = 'checked';
+					$message = $post_array['title'].' Travels To You';
+				}else{
+					$class = 'not_checked';
+					$message = 'You Travel To '. $post_array['title'];
+				}
+				echo '<div class="check_toggle" id="check_toggle">'.$message.'</div>';
+				echo '<div class="listing_icon">';
+
+					echo '<svg id="check_'.$post_array['check'].'" class="check '.$class.'" shape-rendering="geometricPrecision" onclick="check_travel()">';
+					echo '<use xlink:href="';
+					is_customize_preview() ?
+					esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+					echo '#van';
+					echo '"></use>';
+					echo '</svg>';
+
+					echo '<a href="'.$post_array['map_link'].'">';
+						echo '<svg shape-rendering="geometricPrecision">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#placeholder';
+						echo '"></use>';
+						echo '</svg>';
+					echo '</a>';
+
+					echo '<a href="'.$post_array['link'].'" target="_blank">';
+						echo '<svg shape-rendering="geometricPrecision">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#share';
+						echo '"></use>';
+						echo '</svg>';
+					echo '</a>';
+				echo '</div>';
+			echo '</div>';
+		echo '</li>';
+	}
+	}else {
+		echo '<p class="no-events">';
+		echo 'We havent found any businesses in this category.. </br></br> If you are a business owner on or know someone who would benefit from being listed here please let us know to today.<br/>';
+		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
+		echo '</p>';
+	}
+}
+
+function get_food_category_listings($category){
+
+	// var_dump($category);
+
+	$args = array(
+		'posts_per_page'   => -1,
+		'category'         => $category,
+		'orderby'          => 'name',
+		'order'            => 'ASC',
+		'post_type'        => 'food'
+	);
+	$posts = get_posts( $args );
+
+	if($posts){
+
+	foreach( $posts as $post ){
+		$post_array = queryFoodToArray($post);
+		echo '<li id="contact">';
+			echo '<div class="promo_image">';
+				echo '<img src="'.$post_array['image'].'" alt="Listing Image"/>';
+			echo '</div>';
+			echo '<div class="promo_content">';
+				echo '<h3 id="c_name"> Hey '.$post_array['title'].'</h3>';
+				echo '<span id="c_id">'.$post_array['id'].'</span>';
+				echo '<div class="link_line"><a class="link_line_phone" href="tel:'.$post_array['number'].'">'.$post_array['number'].'</a><a id="c_oemail" href="mailto:'.$post_array['email'].'">'.$post_array['email'].'</a></div>';
+				echo '<p>'.$post_array['summary'].'</p>';
+				
+				if($post_array['check'] == 1){
+					$class = 'checked';
+					$message = $post_array['title'].' Travels To You';
+				}else{
+					$class = 'not_checked';
+					$message = 'You Travel To '. $post_array['title'];
+				}
+				
+				$gf = $post_array['gf_check'];
+				$v = $post_array['vegan_check'];
+				$t = $post_array['takeaway_check'];
+				$a = $post_array['alcohol_check'];
+				$c = $post_array['check'];
+
+				$class_gf = '';
+				$class_v = '';
+				$class_t = '';
+				$class_a = '';
+				$class_c = '';
+
+				if($gf == 1){
+					$class_gf = 'checked';
+				}
+				if($v == 1){
+					$class_v = 'checked';
+				}
+				if($t == 1){
+					$class_t = 'checked';
+				}
+				if($a == 1){
+					$class_a = 'checked';
+				}
+				if($c == 1){
+					$class_c = 'checked';
+				}
+
+				echo '<div class="check_toggle" id="check_toggle">'.$message.'</div>';
+				echo '<div class="toggle_check" id="toggle_check"></div>';
+				echo '<div class="listing_icon">';
+					echo '<div>';
+						echo '<svg id="check_'.$gf.'" class="check '.$class_gf.'" shape-rendering="geometricPrecision"
+						onclick="toggle_check(\''.$gf.'\',\'gf\')">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#gluten-free';
+						echo '"></use>';
+						echo '</svg>'; 
+					echo '</div>';
+					echo '<div>';
+						echo '<svg id="check_'.$v.'" class="check '.$class_v.'" shape-rendering="geometricPrecision"
+						onclick="toggle_check(\''.$v.'\',\'v\')">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#diet';
+						echo '"></use>';
+						echo '</svg>'; 
+					echo '</div>';
+					echo '<div>';
+						echo '<svg id="check_'.$a.'" class="check '.$class_t.'" shape-rendering="geometricPrecision"
+						onclick="toggle_check(\''.$a.'\',\'a\')">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#cheers';
+						echo '"></use>';
+						echo '</svg>'; 
+					echo '</div>';
+					echo '<div>';
+						echo '<svg id="check_'.$t.'" class="check '.$class_a.'" shape-rendering="geometricPrecision"
+						onclick="toggle_check(\''.$t.'\',\'t\')">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#takeaway';
+						echo '"></use>';
+						echo '</svg>'; 
+					echo '</div>';
+					echo '<div>';
+						echo '<svg id="check_'.$c.'" class="check '.$class_c.'" shape-rendering="geometricPrecision"
+						onclick="toggle_check(\''.$c.'\',\'c\')">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#van';
+						echo '"></use>';
+						echo '</svg>'; 
+					echo '</div>';
+
+					echo '<a href="'.$post_array['map_link'].'">';
+						echo '<svg shape-rendering="geometricPrecision">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#placeholder';
+						echo '"></use>';
+						echo '</svg>';
+					echo '</a>';
+
+					echo '<a href="'.$post_array['link'].'" target="_blank">';
+						echo '<svg shape-rendering="geometricPrecision">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#share';
+						echo '"></use>';
+						echo '</svg>';
+					echo '</a>';
+				echo '</div>';
+			echo '</div>';
+		echo '</li>';
+	}
+	}else {
+		echo '<p class="no-events">';
+		echo 'We havent found any businesses in this category.. </br></br> If you are a business owner on or know someone who would benefit from being listed here please let us know to today.<br/>';
+		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
+		echo '</p>';
+	}
+}
+
+function clean($string) {
+	$string = strtolower($string);
+	$string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
+	$string = htmlspecialchars_decode($string);
+	$string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
+	$string = str_replace('--', '-', $string); // Replaces all '--' with hyphen.
+	return $string;
+}
+
+function get_parent_cat_name(){
+	$cat_name = single_cat_title('',false);
+	$cat_id = get_cat_ID($cat_name);
+	$cat = get_category($cat_id); 
+	$cat_parent = get_the_category_by_ID($cat->parent);
+	$clean_cat = clean($cat_parent);
+	echo $clean_cat;
+}
+
+function new_subcategory_hierarchy() { 
+	$category = get_queried_object();
+
+	$parent_id = $category->category_parent;
+
+	$templates = array();
+
+	if ( $parent_id == 0 ) {
+			// Use default values from get_category_template()
+			$templates[] = "category-{$category->slug}.php";
+			$templates[] = "category-{$category->term_id}.php";
+			$templates[] = 'category.php';     
+	} else {
+			// Create replacement $templates array
+			$parent = get_category( $parent_id );
+
+			// Current first
+			$templates[] = "category-{$category->slug}.php";
+			$templates[] = "category-{$category->term_id}.php";
+
+			// Parent second
+			$templates[] = "category-{$parent->slug}.php";
+			$templates[] = "category-{$parent->term_id}.php";
+			$templates[] = 'category.php'; 
+	}
+	return locate_template( $templates );
+}
+
+add_filter( 'category_template', 'new_subcategory_hierarchy' );
+
+function get_search_slug($id){
+
+	$cat = get_the_category( $id );
+
+	if($cat == null){
+		return get_permalink($id);
+	}else{
+		// echo '<pre>';
+		// echo print_r($cat);
+		// echo '</pre>';
+		return get_category_link($cat[0]->cat_ID);
+	}
+
+
+}

@@ -21,5 +21,11 @@
 </head>
 
 <body <?php body_class(); ?>>
+<div class="hidden" hidden>
+	<?php get_template_part( 'images/sprite.svg' ); ?>
+</div>
+<div id="screen_search_form" class="screen_search_form">
+<?php get_search_form()?>
+</div>
 <div id="page" class="site">
 	

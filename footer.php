@@ -6,16 +6,14 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
- * @package phillip_dir
+ * @package base
  */
 
 ?>
 
 	</div><!-- #content -->
 
-</div><!-- #page -->
-
-<?php wp_footer(); ?>
-
+  <?php wp_footer(); ?>
 </body>
 </html>
+

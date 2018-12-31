@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Events - This Week
+Template Name: List Business
 */
 get_header();
 ?>
@@ -12,20 +12,36 @@ get_header();
   </ul>
   <div class="event_nav" id="event_nav">
     <ul>
-      <li><a href="<?php echo home_url('events-today'); ?>">Today</a></li>
+      <li><a href="<?php echo home_url('events-today'); ?>" class="active">Today</a></li>
       <li><a href="<?php echo home_url('events-tomorrow'); ?>">Tomorrow</a></li>
       <li><a href="<?php echo home_url('events-this-weekend'); ?>">This Weekend</a></li>
-      <li><a href="<?php echo home_url('events-this-week'); ?>" class="active">This Week</a></li>
+      <li><a href="<?php echo home_url('events-this-week'); ?>">This Week</a></li>
       <li><a href="<?php echo home_url('events-next-week'); ?>">Next Week</a></li>
     </ul>
   </div>
   <div id="content" class="site-content body_push" onclick="menuCheck(event);">
     <section class="page_title">
-      <h1>Events This Week</h1>
+      <h1>List Your Business</h1>
     </section>
-    <section class="events">
-      <?php get_events_this_week(); ?>
-    </section> 
+    <section class="list_link">
+      <ul>
+        <li>
+          <a href="https://goo.gl/forms/IMlTq5CupDtYYGMh1" target="_blank">List Your Service</a>
+        </li>
+        <li>
+          <a href="https://goo.gl/forms/M2cH778a6Y1jGDh43" target="_blank">List Your Venue</a>
+        </li>
+        <li>
+          <a href="https://goo.gl/forms/5dMCYPYsdhVJgq502" target="_blank">List Your Accommodation</a>
+        </li>
+        <li>
+          <a href="https://goo.gl/forms/vsziIYL1kaVHN2ag2" target="_blank">List Your Transportation Service</a>
+        </li>
+        <li>
+          <a href="https://goo.gl/forms/Z4vnWdC4Hb3O4dhl2" target="_blank">List Your Community Group</a>
+        </li>
+      </ul>
+    </section>
   </div>
 <?php
 get_footer();

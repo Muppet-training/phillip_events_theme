@@ -13,7 +13,7 @@ get_header();
 <div id="primary" class="content-area">
 	<main id="main" class="site-main">
 
-    Post Page
+    Listing Post Page
 
 	</main><!-- #main -->
 </div><!-- #primary -->

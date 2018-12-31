@@ -9,47 +9,42 @@
 
 get_header();
 ?>
-
-	<section id="primary" class="content-area">
-		<main id="main" class="site-main">
-
-		<?php if ( have_posts() ) : ?>
-
-			<header class="page-header">
-				<h1 class="page-title">
+	<ul class="main_header" role="navigation">
+    <li><a href="<?php echo home_url('/'); ?>"><h3>Phillip Island Time</h3></a></li>
+    <li class="logo"><img class="why_icon" src="<?php echo get_template_directory_uri(); ?>/images/small_star.png)"></li>
+    <li class="search_button"><?php get_search_form()?><div id="dashicons-search" class="dashicons dashicons-search" onclick="search_now();"></div></li>
+    <li class="nav_button" onclick="eventNavToggle(event);">What's On?</li>
+  </ul>
+  <div class="event_nav" id="event_nav">
+    <ul>
+      <li><a href="<?php echo home_url('events-today'); ?>">Today</a></li>
+      <li><a href="<?php echo home_url('events-tomorrow'); ?>">Tomorrow</a></li>
+      <li><a href="<?php echo home_url('events-this-weekend'); ?>">This Weekend</a></li>
+      <li><a href="<?php echo home_url('events-this-week'); ?>">This Week</a></li>
+      <li><a href="<?php echo home_url('events-next-week'); ?>">Next Week</a></li>
+    </ul>
+  </div>
+	<div id="content" class="site-content body_push" onclick="menuCheck();">
+		<section class="search_results">
+			<section class="page_title">
+				<h1>Events on Today</h1>
+			</section>
+			<h4 class="date_heading">Search Results..</h4>
+			<?php if ( have_posts() ) : ?>
+				<ul>
 					<?php
-					/* translators: %s: search query. */
-					printf( esc_html__( 'Search Results for: %s', 'phillip_dir' ), '<span>' . get_search_query() . '</span>' );
+						/* Start the Loop */
+						while ( have_posts() ) : the_post();
+						get_template_part('content', 'search');
+						endwhile;
 					?>
-				</h1>
-			</header><!-- .page-header -->
-
+				</ul>
 			<?php
-			/* Start the Loop */
-			while ( have_posts() ) :
-				the_post();
-
-				/**
-				 * Run the loop for the search to output the results.
-				 * If you want to overload this in a child theme then include a file
-				 * called content-search.php and that will be used instead.
-				 */
-				get_template_part( 'template-parts/content', 'search' );
-
-			endwhile;
-
-			the_posts_navigation();
-
-		else :
-
-			get_template_part( 'template-parts/content', 'none' );
-
-		endif;
-		?>
-
-		</main><!-- #main -->
-	</section><!-- #primary -->
+				else :
+					get_template_part( 'template-parts/content', 'none' );
+				endif;
+			?>
+		</section>
 
 <?php
-get_sidebar();
 get_footer();
