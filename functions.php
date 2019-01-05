@@ -300,126 +300,909 @@ function today_start($array, $now, $today){
 }
 
 function tomorrow_start($array, $now){
-	$c = 0;
-	$tomorrow = strtotime('tomorrow'); 
-	$next_day_start = strtotime('+2 day 00:00'); 
+	$tomorrow_end = strtotime('tomorrow 23:59');
+	$tomorrow_start = strtotime('tomorrow 04:00');
+	$tomorrow_day = date('N', $tomorrow_start);
+	// echo $tomorrow_day;
 
-	// echo $tomorrow . ' - ' . $next_day_start . ' - ' . $now . '<br/>';
-	
+	$c = 0;
+	$n = 0; 
 	foreach ($array as $k => $v){
-		// echo $v['start_stamp'] . '<br/>';
-		
-		if($v['start_stamp'] <= $next_day_start &&  $v['start_stamp'] >= $tomorrow){
+		if(date('N', $v['start_stamp']) == $tomorrow_day ){
 			$res[] = $v;
 			$c = 1;
-		}	
-	}
-	if($c == 0){
-		$res = null;
+		}
+		elseif($v['start_stamp'] <= $tomorrow_end && $tomorrow_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
 	}
 	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
 	return $res;
+	// $c = 0;
+	// $tomorrow = strtotime('tomorrow'); 
+	// $next_day_start = strtotime('+2 day 00:00'); 
+
+	// // echo $tomorrow . ' - ' . $next_day_start . ' - ' . $now . '<br/>';
+	
+	// foreach ($array as $k => $v){
+	// 	// echo $v['start_stamp'] . '<br/>';
+		
+	// 	if($v['start_stamp'] <= $next_day_start &&  $v['start_stamp'] >= $tomorrow){
+	// 		$res[] = $v;
+	// 		$c = 1;
+	// 	}	
+	// }
+	// if($c == 0){
+	// 	$res = null;
+	// }
+	// if($c == 0){$res = null;}
+	// return $res;
 }
 
 function monday_start($array){
+	$monday_end = strtotime('monday 23:59');
+	$monday_start = strtotime('monday 04:00');
 	$c = 0;
+	$n = 0; 
 	foreach ($array as $k => $v){
 		if(date('N', $v['start_stamp']) == 1 ){
 			$res[] = $v;
 			$c = 1;
-		}	
-	}
-	if($c == 0){
-		$res = null;
+		}
+		elseif($v['start_stamp'] <= $monday_end && $monday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
 	}
 	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
 	return $res;
 }
 
 function tuesday_start($array){
+	$tuesday_end = strtotime('tuesday 23:59');
+	$tuesday_start = strtotime('tuesday 04:00');
 	$c = 0;
+	$n = 0; 
 	foreach ($array as $k => $v){
 		if(date('N', $v['start_stamp']) == 2 ){
 			$res[] = $v;
 			$c = 1;
-		}	
-	}
-	if($c == 0){
-		$res = null;
+		}
+		elseif($v['start_stamp'] <= $tuesday_end && $tuesday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
 	}
 	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
 	return $res;
 }
 
 function wednesday_start($array){
+	$wednesday_end = strtotime('wednesday 23:59');
+	$wednesday_start = strtotime('wednesday 04:00');
 	$c = 0;
+	$n = 0; 
 	foreach ($array as $k => $v){
 		if(date('N', $v['start_stamp']) == 3 ){
 			$res[] = $v;
 			$c = 1;
-		}	
-	}
-	if($c == 0){
-		$res = null;
+		}
+		elseif($v['start_stamp'] <= $wednesday_end && $wednesday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
 	}
 	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
 	return $res;
 }
 
 function thursday_start($array){
+	$thursday_end = strtotime('thursday 23:59');
+	$thursday_start = strtotime('thursday 04:00');
 	$c = 0;
+	$n = 0; 
 	foreach ($array as $k => $v){
 		if(date('N', $v['start_stamp']) == 4 ){
 			$res[] = $v;
 			$c = 1;
-		}	
-	}
-	if($c == 0){
-		$res = null;
+		}
+		elseif($v['start_stamp'] <= $thursday_end && $thursday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
 	}
 	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
 	return $res;
 }
 
 function friday_start($array){
+
+	$friday_end = strtotime('friday 23:59');
+	$friday_start = strtotime('friday 04:00');
 	$c = 0;
+	$n = 0; 
 	foreach ($array as $k => $v){
 		if(date('N', $v['start_stamp']) == 5 ){
 			$res[] = $v;
 			$c = 1;
-		}	
+		}
+		elseif($v['start_stamp'] <= $friday_end && $friday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
 	}
 	if($c == 0){
 		$res = null;
 	}
-	// echo '<pre>';
-	// echo print_r($res);
-	// echo '</pre>';
-	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		// echo '<pre>';
+		// print_r($sorted);
+		// echo '</pre>';
+		return $sorted;
+	}
 	return $res;
 }
 
 function saturday_start($array){
+
+	$saturday_end = strtotime('saturday 23:59');
+	$saturday_start = strtotime('saturday 04:00');
 	$c = 0;
+	$n = 0; 
 	foreach ($array as $k => $v){
 		if(date('N', $v['start_stamp']) == 6 ){
 			$res[] = $v;
 			$c = 1;
-		}	
+		}
+		elseif($v['start_stamp'] <= $saturday_end && $saturday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
 	}
 	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		
+		return $sorted;
+	}
 	return $res;
 }
 
 function sunday_start($array){
+
+	$sunday_end = strtotime('sunday 23:59');
+	$sunday_start = strtotime('sunday 04:00');
 	$c = 0;
+	$n = 0;
 	foreach ($array as $k => $v){
 		if(date('N', $v['start_stamp']) == 7 ){
 			$res[] = $v;
 			$c = 1;
 		}	
+		elseif($v['start_stamp'] <= $sunday_end && $sunday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
+
 	}
 	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
+	return $res;
+}
+
+function next_monday_start($array){
+	$day = date('N', strtotime('today'));
+	if($day < 1){
+		$monday_end = strtotime('next monday + 1 week 23:59');
+		$monday_start = strtotime('next monday + 1 week 04:00');
+	}else{
+		$monday_end = strtotime('next monday 23:59');
+		$monday_start = strtotime('next monday 04:00');
+	}
+
+	$c = 0;
+	$n = 0; 
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 1 ){
+			$res[] = $v;
+			$c = 1;
+		}
+		elseif($v['start_stamp'] <= $monday_end && $monday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
+	}
+	// echo '<pre>';
+	// print_r($res);
+	// echo '</pre>';
+	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
+	return $res;
+}
+
+function next_tuesday_start($array){
+	$day = date('N', strtotime('today'));
+	if($day < 2){
+		$tuesday_end = strtotime('next tuesday + 1 week 23:59');
+		$tuesday_start = strtotime('next tuesday + 1 week 04:00');
+	}else{
+		$tuesday_end = strtotime('next tuesday 23:59');
+		$tuesday_start = strtotime('next tuesday 04:00');
+	}
+	$c = 0;
+	$n = 0; 
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 2 ){
+			$res[] = $v;
+			$c = 1;
+		}
+		elseif($v['start_stamp'] <= $tuesday_end && $tuesday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
+	}
+	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
+	return $res;
+}
+
+function next_wednesday_start($array){
+	$day = date('N', strtotime('today'));
+	if($day < 3){
+		$wednesday_end = strtotime('next wednesday + 1 week 23:59');
+		$wednesday_start = strtotime('next wednesday + 1 week 04:00');
+	}else{
+		$wednesday_end = strtotime('next wednesday 23:59');
+		$wednesday_start = strtotime('next wednesday 04:00');
+	}
+	$c = 0;
+	$n = 0; 
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 3 ){
+			$res[] = $v;
+			$c = 1;
+		}
+		elseif($v['start_stamp'] <= $wednesday_end && $wednesday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
+	}
+	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
+	return $res;
+}
+
+function next_thursday_start($array){
+	$day = date('N', strtotime('today'));
+	if($day < 4){
+		$thursday_end = strtotime('next thursday + 1 week 23:59');
+		$thursday_start = strtotime('next thursday + 1 week 04:00');
+	}else{
+		$thursday_end = strtotime('next thursday 23:59');
+		$thursday_start = strtotime('next thursday 04:00');
+	}
+	$c = 0;
+	$n = 0; 
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 4 ){
+			$res[] = $v;
+			$c = 1;
+		}
+		elseif($v['start_stamp'] <= $thursday_end && $thursday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
+	}
+	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
+	return $res;
+}
+
+function next_friday_start($array){
+	$day = date('N', strtotime('today'));
+	if($day < 5){
+		$friday_end = strtotime('next friday + 1 week 23:59');
+		$friday_start = strtotime('next friday + 1 week 04:00');
+	}else{
+		$friday_end = strtotime('next friday 23:59');
+		$friday_start = strtotime('next friday 04:00');
+	}
+	$c = 0;
+	$n = 0; 
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 4 ){
+			$res[] = $v;
+			$c = 1;
+		}
+		elseif($v['start_stamp'] <= $friday_end && $friday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
+	}
+	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
+	return $res;
+}
+
+function next_saturday_start($array){
+	$day = date('N', strtotime('today'));
+	if($day < 6){
+		$saturday_end = strtotime('next saturday + 1 week 23:59');
+		$saturday_start = strtotime('next saturday + 1 week 04:00');
+	}else{
+		$saturday_end = strtotime('next saturday 23:59');
+		$saturday_start = strtotime('next saturday 04:00');
+	}
+	// echo $saturday_start;
+	$c = 0;
+	$n = 0; 
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 6 ){
+			$res[] = $v;
+			$c = 1;
+		}
+		elseif($v['start_stamp'] <= $saturday_end && $saturday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
+	}
+	// echo '<pre>';
+	// print_r($res);
+	// echo '</pre>';
+	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
+	return $res;
+}
+
+function next_sunday_start($array){
+	$day = date('N', strtotime('today'));
+	if($day < 7){
+		$sunday_end = strtotime('next sunday + 1 week 23:59');
+		$sunday_start = strtotime('next sunday + 1 week 04:00');
+	}else{
+		$sunday_end = strtotime('next sunday 23:59');
+		$sunday_start = strtotime('next sunday 04:00');
+	}
+	$c = 0;
+	$n = 0; 
+	foreach ($array as $k => $v){
+		if(date('N', $v['start_stamp']) == 4 ){
+			$res[] = $v;
+			$c = 1;
+		}
+		elseif($v['start_stamp'] <= $sunday_end && $sunday_start <= $v['end_stamp']  ){
+			$cDate = date('N', $v['start_stamp']);
+			switch ($cDate) {
+				case 1:
+						$nStamp = strtotime('+6 day', $v['start_stamp']);
+						break;
+				case 2:
+						$nStamp = strtotime('+5 day', $v['start_stamp']);
+						break;
+				case 3:
+						$nStamp = strtotime('+4 day', $v['start_stamp']);
+						break;
+				case 4:
+						$nStamp = strtotime('+3 day', $v['start_stamp']);
+						break;
+				case 5:
+						$nStamp = strtotime('+2 day', $v['start_stamp']);
+						break;
+				case 6:
+						$nStamp = strtotime('+1 day', $v['start_stamp']);
+						break;
+				case 7:
+						$nStamp = strtotime('+7 day', $v['start_stamp']);
+						break;
+			}
+			$v['newStamp'] = $nStamp;
+			$res[] = $v;
+			$res[0]['start_stamp'] = $nStamp;
+			$c = 1;
+			$n = 1;
+		}
+	}
+	if($c == 0){$res = null;}
+	if($n == 1){
+		foreach ($res as $k => $v){
+			if(isset($v['newStamp'])){
+				$res[$k]['start_stamp'] = $v['newStamp'];
+			}
+		}
+		$sorted = val_sort($res, 'start_stamp');
+		return $sorted;
+	}
 	return $res;
 }
 
@@ -506,6 +1289,7 @@ function queryFoodToArray($post){
 			'check'					=> $post_meta['food_travel_check'][0],
 			'summary'				=> $post_meta['food_summary'][0],
 			'map_link'			=> $post_meta['food_map'][0],
+			'menu_link'			=> $post_meta['food_menu'][0],
 			
 			'number'				=> $post_meta['o_number'][0],
 			'email'					=> $post_meta['o_email'][0],
@@ -601,11 +1385,13 @@ function display_events($event_array){
 			echo '</li>';
 		}
 	echo '</ul>';
+	echo '<hr class="event_separator">';
 }
 
 function get_events_today(){
 	$now = time('now');
 	$args = array (
+		'posts_per_page' => '-1',
     'post_type' => 'event',
     'meta_query' => array(
 			array(
@@ -651,6 +1437,7 @@ function get_events_today(){
 function get_events_tomorow(){
 	$tomorrow = strtotime('tomorrow');
 	$args = array (
+		'posts_per_page' => '-1',
     'post_type' => 'event',
     'meta_query' => array(
 			array(
@@ -701,6 +1488,7 @@ function get_events_dates_this_weekend(){
 		$sunday = date('j M', strtotime('next sunday'));
 	} elseif($d == 5 || $d == 6){ // Friday - Sunday
 		$start = date('j M', strtotime('last friday')); 
+		print_r($start);
 		$sunday = date('j M', strtotime('next sunday'));	
 	}elseif($d == 7){
 		$start = date('j M', strtotime('last friday'));
@@ -715,7 +1503,7 @@ function get_events_dates_this_week(){
 	if($d == 2 || $d == 3 || $d == 4 || $d == 5 || $d == 6){
 		$start = date('j M', strtotime('last monday'));
 		$sunday = date('j M', strtotime('next sunday'));
-	} elseif($d == 1){ // Friday - Sunday
+	}elseif($d == 1){ // Friday - Sunday
 		$start = date('j M', strtotime('today'));
 		$sunday = date('j M', strtotime('next sunday'));
 	}elseif($d == 7){
@@ -765,6 +1553,7 @@ function get_events_this_weekend(){
 			),
 		);
 		$args = array (
+			'posts_per_page' => '-1',
 			'post_type' => 'event',
 			'orderby' => 'meta_value',
     	'order' => 'ASC',
@@ -772,6 +1561,7 @@ function get_events_this_weekend(){
 		);
 	} elseif($d == 5){ // Friday
 		$now = time('now');
+		// print_r($now);
 		$fake_friday = strtotime('last Friday 16:00');
 		$sunday = strtotime('next Sunday 23:59');
 		$meta_query = array(
@@ -791,13 +1581,14 @@ function get_events_this_weekend(){
 			),
 		);
 		$args = array (
+			'posts_per_page' => '-1',
 			'post_type' => 'event',
 			'orderby' => 'meta_value',
     	'order' => 'ASC',
 			'meta_query' => $meta_query
 				
 		);
-	} elseif($d == 6 || $d == 7){ // Saturday & Sunday
+	} elseif($d == 6){ // Saturday & Sunday
 		$now = time('now');
 		$sunday = strtotime('next Sunday 23:59');
 		$meta_query = array(
@@ -817,6 +1608,33 @@ function get_events_this_weekend(){
 			),
 		);
 		$args = array (
+			'posts_per_page' => '-1',
+			'post_type' => 'event',
+			'orderby' => 'meta_value',
+    	'order' => 'ASC',
+			'meta_query' => $meta_query	
+		);
+	} elseif($d == 7) {
+		$now = time('now');
+		$sunday = strtotime('today 23:59');
+		$meta_query = array(
+			'relation' => 'OR',
+			array( // Pre -> Now
+				'relation' => 'AND',
+				array(
+					'key'     => 'event_end_timestamp',
+					'compare' => '>=',
+					'value'   => $now,
+				),
+				array(
+					'key'     => 'event_start_timestamp',
+					'compare' => '<=',
+					'value'   => $sunday,
+				),
+			),
+		);
+		$args = array (
+			'posts_per_page' => '-1',
 			'post_type' => 'event',
 			'orderby' => 'meta_value',
     	'order' => 'ASC',
@@ -826,14 +1644,14 @@ function get_events_this_weekend(){
 
 	
 	$query = new WP_Query( $args );
-	// echo '<pre>';
-	// var_dump($query);
-	// echo '</pre>';
+
 
 	
 	if ( $query->have_posts() ) {
 		$post_data = queryToArray($query);	
-		
+		// echo '<pre>';
+		// var_dump($post_data);
+		// echo '</pre>';
 		$sorted = val_sort($post_data, 'start_stamp');
 		
 		if(!empty($sorted)) {
@@ -889,12 +1707,9 @@ function get_events_this_weekend(){
 }
 
 function get_events_this_week(){
-	$today = strtotime('firday');
+	$today = strtotime('now');
 	$d = date('N', $today);
 	$now = time('now');
-	// $now = '1546000000';
-	// echo $d. ' day ';
-	// echo $now. ' now '; 
 	if($d <= 6 ){
 		$sunday = strtotime('next Sunday 23:59');
 		$meta_query = array(
@@ -914,6 +1729,7 @@ function get_events_this_week(){
 			),
 		);
 		$args = array (
+			'posts_per_page' => -1,
 			'post_type' => 'event',
 			'orderby' => 'meta_value',
     	'order' => 'ASC',
@@ -938,18 +1754,28 @@ function get_events_this_week(){
 			),
 		);
 		$args = array (
+			'posts_per_page'         => '-1',
 			'post_type' => 'event',
 			'orderby' => 'meta_value',
     	'order' => 'ASC',
-			'meta_query' => $meta_query
-				
+			'meta_query' => $meta_query,			
 		);
 	}
 	
 	$query = new WP_Query( $args );
+
+	// echo '<pre>';
+	// print_r($query);
+	// echo '</pre>';
+
 	
 	if ( $query->have_posts() ) {
-		$post_data = queryToArray($query);	
+		$post_data = queryToArray($query);
+		
+		// echo '<pre>';
+		// print_r($post_data);
+		// echo '</pre>';
+		
 		$sorted = val_sort($post_data, 'start_stamp');
 		$today_int = date('N', $today);
 
@@ -976,10 +1802,10 @@ function get_events_this_week(){
 
 			if($today_start != null){
 				echo '<h4 class="date_heading">';
-					echo 'Events starting Today - ' . date('l, F jS', $today_start[0]['start_stamp']);
+					echo 'Events starting Today <br/>' . date('l, F jS', $today_start[0]['start_stamp']);
 				echo '</h4>';
 				display_events($today_start); 
-			}	
+			}
 			
 			if($tomorrow_start != null){
 				echo '<h4 class="date_heading">';
@@ -1006,6 +1832,7 @@ function get_events_this_week(){
 							echo '</h4>';
 							display_events($thursday_start); 
 						}
+						
 						if($fri_int != null && $fri_int == $x){
 							echo '<h4 class="date_heading">';
 								echo date('l, F jS', $friday_start[0]['start_stamp']);
@@ -1107,6 +1934,7 @@ function get_events_next_week(){
 		),
 	);
 	$args = array (
+		'posts_per_page' => '-1',
 		'post_type' => 'event',
 		'orderby' => 'meta_value',
 		'order' => 'ASC',
@@ -1119,14 +1947,18 @@ function get_events_next_week(){
 		$post_data = queryToArray($query);	
 		$sorted = val_sort($post_data, 'start_stamp');
 
+		// echo '<pre>';
+		// print_r($post_data);
+		// echo '</pre>';
+
 		if(!empty($sorted)) {
-			$monday_start = monday_start($sorted);
-			$tuesday_start = tuesday_start($sorted);
-			$wednesday_start = wednesday_start($sorted);
-			$thursday_start = thursday_start($sorted);
-			$friday_start = friday_start($sorted);
-			$saturday_start = saturday_start($sorted);
-			$sunday_start = sunday_start($sorted);
+			$monday_start = next_monday_start($sorted);
+			$tuesday_start = next_tuesday_start($sorted);
+			$wednesday_start = next_wednesday_start($sorted);
+			$thursday_start = next_thursday_start($sorted);
+			$friday_start = next_friday_start($sorted);
+			$saturday_start = next_saturday_start($sorted);
+			$sunday_start = next_sunday_start($sorted);
 
 			$c = 1;
 
@@ -1193,6 +2025,7 @@ function get_events(){
 	$now = time('now');
 	echo $now;
 	$args = array (
+		'posts_per_page' => '-1',
     'post_type' => 'event',
 	);
 
@@ -1341,6 +2174,7 @@ function sub_category_menu($cats, $cat){
 function get_category_icons(){
 	
 	$args = array(
+		'posts_per_page' => '-1',
 		'type'            => 'listing',
 		'orderby'         => 'name',
 		'order'           => 'ASC',
@@ -1417,14 +2251,14 @@ function get_category_listings($category){
 
 	foreach( $posts as $post ){
 		$post_array = queryListingToArray($post);
-		echo '<li id="contact" onclick="contact_business();">';
+		echo '<li id="contact_'.$post_array['id'].'" onclick="contact_business('.$post_array['id'].');">';
 			echo '<div class="promo_image">';
 				echo '<img src="'.$post_array['image'].'" alt="Listing Image"/>';
 			echo '</div>';
 			echo '<div class="promo_content">';
-				echo '<h3 id="c_name">'.$post_array['title'].'</h3>';
-				echo '<span id="c_id">'.$post_array['id'].'</span>';
-				echo '<div class="link_line"><a class="link_line_phone" href="tel:'.$post_array['number'].'">'.$post_array['number'].'</a><a id="c_oemail" href="mailto:'.$post_array['email'].'">'.$post_array['email'].'</a></div>';
+				echo '<h3 id="c_name_'.$post_array['id'].'">'.$post_array['title'].'</h3>';
+				echo '<span class="c_id" id="c_id_'.$post_array['id'].'">'.$post_array['id'].'</span>';
+				echo '<div class="link_line"><a class="link_line_phone" href="tel:'.$post_array['number'].'">'.$post_array['number'].'</a><a id="c_oemail_'.$post_array['id'].'" href="mailto:'.$post_array['email'].'">'.$post_array['email'].'</a></div>';
 				echo '<p>'.$post_array['summary'].'</p>';
 				if($post_array['check'] == 1){
 					$class = 'checked';
@@ -1433,10 +2267,10 @@ function get_category_listings($category){
 					$class = 'not_checked';
 					$message = 'You Travel To '. $post_array['title'];
 				}
-				echo '<div class="check_toggle" id="check_toggle">'.$message.'</div>';
+				echo '<div class="check_toggle" id="check_toggle_'.$post_array['id'].'">'.$message.'</div>';
 				echo '<div class="listing_icon">';
 
-					echo '<svg id="check_'.$post_array['check'].'" class="check '.$class.'" shape-rendering="geometricPrecision" onclick="check_travel()">';
+					echo '<svg id="check_'.$post_array['check'].'" class="check '.$class.'" shape-rendering="geometricPrecision" onclick="check_travel('.$post_array['id'].')">';
 					echo '<use xlink:href="';
 					is_customize_preview() ?
 					esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
@@ -1469,7 +2303,7 @@ function get_category_listings($category){
 	}
 	}else {
 		echo '<p class="no-events">';
-		echo 'We havent found any businesses in this category.. </br></br> If you are a business owner on or know someone who would benefit from being listed here please let us know to today.<br/>';
+		echo 'We havent found any businesses in this category.. </br>Please check out another sub category</br></br> If you are a business owner or know someone who would benefit from being listed here please let us know to today.<br/>';
 		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
 		echo '</p>';
 	}
@@ -1478,6 +2312,7 @@ function get_category_listings($category){
 function get_food_category_listings($category){
 
 	// var_dump($category);
+	// exit();
 
 	$args = array(
 		'posts_per_page'   => -1,
@@ -1492,14 +2327,15 @@ function get_food_category_listings($category){
 
 	foreach( $posts as $post ){
 		$post_array = queryFoodToArray($post);
-		echo '<li id="contact">';
+		// echo '<li id="contact">';
+		echo '<li id="contact_'.$post_array['id'].'" onclick="contact_business('.$post_array['id'].');">';
 			echo '<div class="promo_image">';
 				echo '<img src="'.$post_array['image'].'" alt="Listing Image"/>';
 			echo '</div>';
 			echo '<div class="promo_content">';
-				echo '<h3 id="c_name"> Hey '.$post_array['title'].'</h3>';
-				echo '<span id="c_id">'.$post_array['id'].'</span>';
-				echo '<div class="link_line"><a class="link_line_phone" href="tel:'.$post_array['number'].'">'.$post_array['number'].'</a><a id="c_oemail" href="mailto:'.$post_array['email'].'">'.$post_array['email'].'</a></div>';
+				echo '<h3 id="c_name_'.$post_array['id'].'">'.$post_array['title'].'</h3>';
+				echo '<span class="c_id" id="c_id_'.$post_array['id'].'">'.$post_array['id'].'</span>';
+				echo '<div class="link_line"><a class="link_line_phone" href="tel:'.$post_array['number'].'">'.$post_array['number'].'</a><a id="c_oemail_'.$post_array['id'].'" href="mailto:'.$post_array['email'].'">'.$post_array['email'].'</a></div>';
 				echo '<p>'.$post_array['summary'].'</p>';
 				
 				if($post_array['check'] == 1){
@@ -1538,12 +2374,12 @@ function get_food_category_listings($category){
 					$class_c = 'checked';
 				}
 
-				echo '<div class="check_toggle" id="check_toggle">'.$message.'</div>';
-				echo '<div class="toggle_check" id="toggle_check"></div>';
+				echo '<div class="check_toggle" id="check_toggle_'.$post_array['id'].'">'.$message.'</div>';
+				// echo '<div class="toggle_check" id="toggle_check_'.$post_array['id'].'"></div>';
 				echo '<div class="listing_icon">';
 					echo '<div>';
 						echo '<svg id="check_'.$gf.'" class="check '.$class_gf.'" shape-rendering="geometricPrecision"
-						onclick="toggle_check(\''.$gf.'\',\'gf\')">';
+						onclick="toggle_check(\''.$gf.'\',\'gf\',\''.$post_array['id'].'\')">';
 						echo '<use xlink:href="';
 						is_customize_preview() ?
 						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
@@ -1553,7 +2389,7 @@ function get_food_category_listings($category){
 					echo '</div>';
 					echo '<div>';
 						echo '<svg id="check_'.$v.'" class="check '.$class_v.'" shape-rendering="geometricPrecision"
-						onclick="toggle_check(\''.$v.'\',\'v\')">';
+						onclick="toggle_check(\''.$v.'\',\'v\',\''.$post_array['id'].'\')">';
 						echo '<use xlink:href="';
 						is_customize_preview() ?
 						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
@@ -1562,8 +2398,8 @@ function get_food_category_listings($category){
 						echo '</svg>'; 
 					echo '</div>';
 					echo '<div>';
-						echo '<svg id="check_'.$a.'" class="check '.$class_t.'" shape-rendering="geometricPrecision"
-						onclick="toggle_check(\''.$a.'\',\'a\')">';
+						echo '<svg id="check_'.$a.'" class="check '.$class_a.'" shape-rendering="geometricPrecision"
+						onclick="toggle_check(\''.$a.'\',\'a\',\''.$post_array['id'].'\')">';
 						echo '<use xlink:href="';
 						is_customize_preview() ?
 						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
@@ -1572,8 +2408,8 @@ function get_food_category_listings($category){
 						echo '</svg>'; 
 					echo '</div>';
 					echo '<div>';
-						echo '<svg id="check_'.$t.'" class="check '.$class_a.'" shape-rendering="geometricPrecision"
-						onclick="toggle_check(\''.$t.'\',\'t\')">';
+						echo '<svg id="check_'.$t.'" class="check '.$class_t.'" shape-rendering="geometricPrecision"
+						onclick="toggle_check(\''.$t.'\',\'t\',\''.$post_array['id'].'\')">';
 						echo '<use xlink:href="';
 						is_customize_preview() ?
 						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
@@ -1583,7 +2419,7 @@ function get_food_category_listings($category){
 					echo '</div>';
 					echo '<div>';
 						echo '<svg id="check_'.$c.'" class="check '.$class_c.'" shape-rendering="geometricPrecision"
-						onclick="toggle_check(\''.$c.'\',\'c\')">';
+						onclick="toggle_check(\''.$c.'\',\'c\',\''.$post_array['id'].'\')">';
 						echo '<use xlink:href="';
 						is_customize_preview() ?
 						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
@@ -1592,12 +2428,22 @@ function get_food_category_listings($category){
 						echo '</svg>'; 
 					echo '</div>';
 
-					echo '<a href="'.$post_array['map_link'].'">';
+					echo '<a href="'.$post_array['map_link'].'" target="_blank">';
 						echo '<svg shape-rendering="geometricPrecision">';
 						echo '<use xlink:href="';
 						is_customize_preview() ?
 						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
 						echo '#placeholder';
+						echo '"></use>';
+						echo '</svg>';
+					echo '</a>';
+					
+					echo '<a href="'.$post_array['menu_link'].'" target="_blank">';
+						echo '<svg shape-rendering="geometricPrecision">';
+						echo '<use xlink:href="';
+						is_customize_preview() ?
+						esc_url( get_template_directory_uri() . '/images/sprite.svg' ) : '';
+						echo '#menu';
 						echo '"></use>';
 						echo '</svg>';
 					echo '</a>';
@@ -1617,7 +2463,7 @@ function get_food_category_listings($category){
 	}
 	}else {
 		echo '<p class="no-events">';
-		echo 'We havent found any businesses in this category.. </br></br> If you are a business owner on or know someone who would benefit from being listed here please let us know to today.<br/>';
+		echo 'We havent found any businesses in this category.. </br>Please check out another sub category</br></br> If you are a business owner or know someone who would benefit from being listed here please let us know to today.<br/>';
 		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
 		echo '</p>';
 	}

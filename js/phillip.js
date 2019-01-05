@@ -37,7 +37,8 @@ function contact_event() {
 	xhttp.open(
 		'POST',
 		// '/pit/wp-content/themes/phillip/contact.php',
-		'https://muppettraining.com/wp-content/themes/phillip/contact.php',
+		// 'https://muppettraining.com/wp-content/themes/phillip/contact.php',
+		'https://phillipislandtime.com.au/wp-content/themes/phillip/contact.php',
 		true
 	);
 	xhttp.setRequestHeader(
@@ -56,10 +57,11 @@ function contact_event() {
 	xhttp.send(data);
 }
 
-function contact_business() {
-	const c_id = document.getElementById('c_id').innerHTML;
-	const c_title = document.getElementById('c_name').innerHTML;
-	const c_oemail = document.getElementById('c_oemail').innerHTML;
+function contact_business(id) {
+	const c_id = document.getElementById('c_id_' + id).innerHTML;
+	const c_title = document.getElementById('c_name_' + id).innerHTML;
+	const c_oemail = document.getElementById('c_oemail_' + id)
+		.innerHTML;
 
 	const data =
 		'c_id=' +
@@ -73,7 +75,7 @@ function contact_business() {
 	xhttp.open(
 		'POST',
 		// '/pit/wp-content/themes/phillip/contact-business.php',
-		'https://muppettraining.com/wp-content/themes/phillip/contact-business.php',
+		'https://phillipislandtime.com.au/wp-content/themes/phillip/contact-business.php',
 		true
 	);
 	xhttp.setRequestHeader(
@@ -92,63 +94,101 @@ function contact_business() {
 	xhttp.send(data);
 }
 
-function check_travel() {
-	var check = document.getElementById('check_toggle');
-	if (check.classList.contains('check_toggle_clicked')) {
-		check.classList.remove('check_toggle_clicked');
+function check_travel(id) {
+	var check = document.getElementById('check_toggle_' + id);
+	var contact = document.getElementById('contact_' + id);
+	// console.log(check.style.display);
+	if (check.style.display == 'block') {
+		check.style.display = 'none';
 	} else {
-		check.classList.add('check_toggle_clicked');
+		check.style.display = 'block';
 	}
 }
 
-function toggle_check(toggle, name) {
-	var toggle_box = document.getElementById('toggle_check');
+function toggle_check(toggle, name, id) {
+	var check = document.getElementById('check_toggle_' + id);
+	// alert(class_c);
 	switch (name) {
 		case 'gf':
-			if (toggle == 1) {
-				toggle_box.innerHTML =
-					'Gluten Free Options Avalaible';
+			if (
+				check.style.display == 'block' &&
+				check.classList.contains('gf')
+			) {
+				check.style.display = 'none';
 			} else {
-				toggle_box.innerHTML = 'No Gluten Free Options';
+				check.style.display = 'block';
+				check.classList = 'check_toggle gf';
 			}
-
+			if (toggle == 1) {
+				check.innerHTML = 'Gluten Free Options Avalaible';
+			} else {
+				check.innerHTML = 'No Gluten Free Options';
+			}
 			break;
 		case 'v':
-			if (toggle == 1) {
-				toggle_box.innerHTML = 'Vegan Options Avalaible';
+			if (
+				check.style.display == 'block' &&
+				check.classList.contains('v')
+			) {
+				check.style.display = 'none';
 			} else {
-				toggle_box.innerHTML = 'No Vegan Options';
+				check.style.display = 'block';
+				check.classList = 'check_toggle v';
 			}
-
+			if (toggle == 1) {
+				check.innerHTML = 'Vegan Options Avalaible';
+			} else {
+				check.innerHTML = 'No Vegan Options';
+			}
 			break;
 		case 't':
-			if (toggle == 1) {
-				toggle_box.innerHTML = 'Takeaway Options Avalaible';
+			if (
+				check.style.display == 'block' &&
+				check.classList.contains('t')
+			) {
+				check.style.display = 'none';
 			} else {
-				toggle_box.innerHTML = 'No Takeaway Options';
+				check.style.display = 'block';
+				check.classList = 'check_toggle t';
+			}
+			if (toggle == 1) {
+				check.innerHTML = 'Takeaway Options Avalaible';
+			} else {
+				check.innerHTML = 'No Takeaway Options';
 			}
 			break;
 		case 'a':
-			if (toggle == 1) {
-				toggle_box.innerHTML = 'Alcohol Avalaible';
+			if (
+				check.style.display == 'block' &&
+				check.classList.contains('a')
+			) {
+				check.style.display = 'none';
 			} else {
-				toggle_box.innerHTML = 'No Alchol Avaliable';
+				check.style.display = 'block';
+				check.classList = 'check_toggle a';
+			}
+			if (toggle == 1) {
+				check.innerHTML = 'Alcohol Avalaible';
+			} else {
+				check.innerHTML = 'No Alchol Avaliable';
 			}
 			break;
 		case 'c':
-			if (toggle == 1) {
-				toggle_box.innerHTML = 'Food Travels To You';
+			if (
+				check.style.display == 'block' &&
+				check.classList.contains('c')
+			) {
+				check.style.display = 'none';
 			} else {
-				toggle_box.innerHTML = 'You Travel To Food';
+				check.style.display = 'block';
+				check.classList = 'check_toggle c';
+			}
+			if (toggle == 1) {
+				check.innerHTML = 'Food Travels To You';
+			} else {
+				check.innerHTML = 'You Travel To Food';
 			}
 			break;
-	}
-	if (toggle_box.classList.contains(name)) {
-		toggle_box.classList.remove('toggle_check_clicked');
-		toggle_box.classList.remove(name);
-	} else {
-		toggle_box.className =
-			'toggle_check toggle_check_clicked ' + name;
 	}
 }
 
@@ -225,8 +265,8 @@ function dir_menu(slug) {
 		sub_menu.classList.add('show_submenu');
 	}
 
-	console.log('cClasses: ', cClasses);
-	console.log('classes', list.classList.value);
+	// console.log('cClasses: ', cClasses);
+	// console.log('classes', list.classList.value);
 }
 
 function initCat() {
@@ -238,7 +278,7 @@ function initCat() {
 	// .innerHTML.toString()
 	// .toLowerCase();
 
-	console.log('Cat: ', cat);
+	// console.log('Cat: ', cat);
 
 	var clean_cat = cat
 		.toLowerCase()
@@ -260,7 +300,7 @@ function initCat() {
 		.getElementById(clean_cat)
 		.classList.add('active_sub_menu_item');
 
-	console.log('parent_', parent_cat);
+	// console.log('parent_', parent_cat);
 
 	document.getElementById('parent_' + parent_cat).style.fill =
 		'#07a5e4';

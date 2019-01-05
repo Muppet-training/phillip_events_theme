@@ -61,7 +61,7 @@ get_header();
         if(isset($post['link'])){
         ?>
         
-        <div id="contact" onclick="contact();">
+        <div id="contact" onclick="contact_event();">
           <section>
             <p><?php echo $post['link'];?></p>
             <p>Phone: <?php echo $post['number'];?></p>
