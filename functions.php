@@ -2252,8 +2252,9 @@ function get_category_listings($category){
 	foreach( $posts as $post ){
 		$post_array = queryListingToArray($post);
 		echo '<li id="contact_'.$post_array['id'].'" onclick="contact_business('.$post_array['id'].');">';
-			echo '<div class="promo_image">';
-				echo '<img src="'.$post_array['image'].'" alt="Listing Image"/>';
+		echo '<div class="promo_image" style="background: url('.$post_array['image'].'); background-position: center;
+		background-size: cover; background-repeat: no-repeat;">';
+				// echo '<img src="'.$post_array['image'].'" alt="Listing Image"/>';
 			echo '</div>';
 			echo '<div class="promo_content">';
 				echo '<h3 id="c_name_'.$post_array['id'].'">'.$post_array['title'].'</h3>';
@@ -2329,8 +2330,9 @@ function get_food_category_listings($category){
 		$post_array = queryFoodToArray($post);
 		// echo '<li id="contact">';
 		echo '<li id="contact_'.$post_array['id'].'" onclick="contact_business('.$post_array['id'].');">';
-			echo '<div class="promo_image">';
-				echo '<img src="'.$post_array['image'].'" alt="Listing Image"/>';
+			echo '<div class="promo_image" style="background: url('.$post_array['image'].'); background-position: center;
+			background-size: cover; background-repeat: no-repeat;">';
+				// echo '<img src="'.$post_array['image'].'" alt="Listing Image"/>';
 			echo '</div>';
 			echo '<div class="promo_content">';
 				echo '<h3 id="c_name_'.$post_array['id'].'">'.$post_array['title'].'</h3>';

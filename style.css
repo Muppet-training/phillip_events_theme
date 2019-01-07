@@ -1560,10 +1560,10 @@ span.c_id {
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
   border-radius: 5px 5px 3px 3px;
   margin-bottom: 10px;
+  position: relative;
 }
 .page_listings li div.promo_image {
-  display: inherit;
-  overflow: hidden;
+  border-radius: 5px 0px 0px 5px;
 }
 .page_listings li img {
   border-radius: 5px 0px 0px 3px;
@@ -1611,6 +1611,14 @@ span.c_id {
 }
 .page_listings li div.promo_content div.check_toggle {
   display: none;
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+  background-color: #37c2f9;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 3px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
 }
 .page_listings li div.promo_content div.check_toggle_clicked {
   display: block;
