@@ -142,6 +142,7 @@ function phillip_dir_scripts() {
 	wp_enqueue_script( 'phillip_dir-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
 	
 	wp_enqueue_script( 'phillip_google-maps', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyC0Yqv30YyfuQCwLWN4Aq_7VMtn-7isv8Q&callback=initMap', array(), '20151215', true );
+	
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -266,8 +267,7 @@ function early_weekend_start($array){
 		if(date('N', $v['start_stamp']) <= 4 && date('N', $v['end_stamp']) >= 5 ){
 			$res[] = $v;
 			$c = 1;
-		}	
-		if(date('N', $v['start_stamp']) <= 4 && date('N', $v['end_stamp']) >= 0 ){
+		}elseif(date('N', $v['start_stamp']) <= 4 && date('N', $v['end_stamp']) >= 0 ){
 			if($v['start_stamp'] <= $sunday){
 				$res[] = $v;
 				$c = 1;
@@ -313,30 +313,8 @@ function tomorrow_start($array, $now){
 			$c = 1;
 		}
 		elseif($v['start_stamp'] <= $tomorrow_end && $tomorrow_start <= $v['end_stamp']  ){
-			$cDate = date('N', $v['start_stamp']);
-			switch ($cDate) {
-				case 1:
-						$nStamp = strtotime('+7 day', $v['start_stamp']);
-						break;
-				case 2:
-						$nStamp = strtotime('+6 day', $v['start_stamp']);
-						break;
-				case 3:
-						$nStamp = strtotime('+5 day', $v['start_stamp']);
-						break;
-				case 4:
-						$nStamp = strtotime('+4 day', $v['start_stamp']);
-						break;
-				case 5:
-						$nStamp = strtotime('+3 day', $v['start_stamp']);
-						break;
-				case 6:
-						$nStamp = strtotime('+2 day', $v['start_stamp']);
-						break;
-				case 7:
-						$nStamp = strtotime('+1 day', $v['start_stamp']);
-						break;
-			}
+			$start_time = date('H:i', $v['start_stamp']);
+			$nStamp = strtotime('tomorrow '. $start_time);
 			$v['newStamp'] = $nStamp;
 			$res[] = $v;
 			$res[0]['start_stamp'] = $nStamp;
@@ -355,25 +333,6 @@ function tomorrow_start($array, $now){
 		return $sorted;
 	}
 	return $res;
-	// $c = 0;
-	// $tomorrow = strtotime('tomorrow'); 
-	// $next_day_start = strtotime('+2 day 00:00'); 
-
-	// // echo $tomorrow . ' - ' . $next_day_start . ' - ' . $now . '<br/>';
-	
-	// foreach ($array as $k => $v){
-	// 	// echo $v['start_stamp'] . '<br/>';
-		
-	// 	if($v['start_stamp'] <= $next_day_start &&  $v['start_stamp'] >= $tomorrow){
-	// 		$res[] = $v;
-	// 		$c = 1;
-	// 	}	
-	// }
-	// if($c == 0){
-	// 	$res = null;
-	// }
-	// if($c == 0){$res = null;}
-	// return $res;
 }
 
 function monday_start($array){
@@ -1006,6 +965,7 @@ function next_thursday_start($array){
 			$n = 1;
 		}
 	}
+
 	if($c == 0){$res = null;}
 	if($n == 1){
 		foreach ($res as $k => $v){
@@ -1021,6 +981,7 @@ function next_thursday_start($array){
 
 function next_friday_start($array){
 	$day = date('N', strtotime('today'));
+	// echo $day;
 	if($day < 5){
 		$friday_end = strtotime('next friday + 1 week 23:59');
 		$friday_start = strtotime('next friday + 1 week 04:00');
@@ -1028,10 +989,13 @@ function next_friday_start($array){
 		$friday_end = strtotime('next friday 23:59');
 		$friday_start = strtotime('next friday 04:00');
 	}
+
+	// echo '<br/>' . $friday_start;
+
 	$c = 0;
 	$n = 0; 
 	foreach ($array as $k => $v){
-		if(date('N', $v['start_stamp']) == 4 ){
+		if(date('N', $v['start_stamp']) == 5 ){
 			$res[] = $v;
 			$c = 1;
 		}
@@ -1157,7 +1121,7 @@ function next_sunday_start($array){
 	$c = 0;
 	$n = 0; 
 	foreach ($array as $k => $v){
-		if(date('N', $v['start_stamp']) == 4 ){
+		if(date('N', $v['start_stamp']) == 7 ){
 			$res[] = $v;
 			$c = 1;
 		}
@@ -1384,8 +1348,8 @@ function display_events($event_array){
 				echo '</a>';
 			echo '</li>';
 		}
-	echo '</ul>';
-	echo '<hr class="event_separator">';
+		echo '</ul>';
+		echo '<hr class="event_separator">';
 }
 
 function get_events_today(){
@@ -1414,11 +1378,32 @@ function get_events_today(){
 			$early_start = early_start($sorted, $now );
 			$current_day_start = current_day_start($sorted, $now );
 			if($early_start != null){
+				
+				$today = strtotime('now');
+				$d = date('N', $today);
+				if($d == 1){
+					$this_monday_week = $today;
+				}else{
+					$this_monday_week = strtotime('last Monday 00:00');
+				}
+
+				if($early_start[0]['start_stamp'] <= $this_monday_week){
+					$last_week = '( Last Week )';
+				}else{
+					$last_week = '';
+				}
+
 				echo '<h4 class="date_heading">';
-				echo 'Events happening now, starting from ' . date('l', $early_start[0]['start_stamp']);
+				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) .' '. $last_week . ' and are on Today';
 				echo '</h4>';
 				display_events($early_start); 
 			}
+			// if($early_start != null){
+			// 	echo '<h4 class="date_heading">';
+			// 	echo 'Events happening now, starting from ' . date('l', $early_start[0]['start_stamp']);
+			// 	echo '</h4>';
+			// 	display_events($early_start); 
+			// }
 			if($current_day_start != null){
 				echo '<h4 class="date_heading">';
 				echo 'Today ' . date('l, F jS', $current_day_start[0]['start_stamp']);
@@ -1436,6 +1421,7 @@ function get_events_today(){
 
 function get_events_tomorow(){
 	$tomorrow = strtotime('tomorrow');
+	
 	$args = array (
 		'posts_per_page' => '-1',
     'post_type' => 'event',
@@ -1456,12 +1442,28 @@ function get_events_tomorow(){
 	if ( $query->have_posts() ) {
 		$post_data = queryToArray($query);
 		$sorted = val_sort($post_data, 'start_stamp');
+
 		if(!empty($sorted)){
 			$early_start = early_start($sorted, $tomorrow );
 			$current_day_start = current_day_start($sorted, $tomorrow );
 			if($early_start != null){
+				
+				$today = strtotime('now');
+				$d = date('N', $today);
+				if($d == 1){
+					$this_monday_week = $today;
+				}else{
+					$this_monday_week = strtotime('last Monday 00:00');
+				}
+
+				if($early_start[0]['start_stamp'] <= $this_monday_week){
+					$last_week = '( Last Week )';
+				}else{
+					$last_week = '';
+				}
+
 				echo '<h4 class="date_heading">';
-				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on tomorrow';
+				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) .' '. $last_week . ' and are on Today';
 				echo '</h4>';
 				display_events($early_start); 
 			}
@@ -1475,7 +1477,7 @@ function get_events_tomorow(){
 	} else {
 		echo '<p class="no-events">';
 		echo 'We havent found any events on.. </br> If you have an event on or know of an event please let us know to today.<br/>';
-		echo 'Either call us on <a href="call:0427853233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
+		echo 'Either call us on <a href="call:0427857233">0427 857 233</a> or email us <a href="mailto:jonathan@phillipislandtime.com.au">jonathan @ phillipislandtime.com.au</a>';
 		echo '</p>';
 	}
 }
@@ -1524,7 +1526,7 @@ function get_events_dates_next_week(){
 		$start = date('j M', strtotime('next Monday 00:00'));
 		$following_sunday = date('j M', strtotime('next Sunday +1 week 23:59'));
 	}
-	echo $start . ' - ' . $following_sunday;
+	// echo $start . ' - ' . $following_sunday;
 }
 
 function get_events_this_weekend(){
@@ -1649,9 +1651,6 @@ function get_events_this_weekend(){
 	
 	if ( $query->have_posts() ) {
 		$post_data = queryToArray($query);	
-		// echo '<pre>';
-		// var_dump($post_data);
-		// echo '</pre>';
 		$sorted = val_sort($post_data, 'start_stamp');
 		
 		if(!empty($sorted)) {
@@ -1661,12 +1660,26 @@ function get_events_this_weekend(){
 			$sunday_start = sunday_start($sorted);
 
 			if($early_start != null){
+				
+				// $d = date('N', $today);
+				if($d == 1){
+					$this_monday_week = $today;
+				}else{
+					$this_monday_week = strtotime('last Monday 00:00');
+				}
+
+				if($early_start[0]['start_stamp'] <= $this_monday_week){
+					$last_week = '( Last Week )';
+				}else{
+					$last_week = '';
+				}
+
 				echo '<h4 class="date_heading">';
-				// echo 'Weekend Events Starting From: <br/>' . date('l, F j', $early_start[0]['start_stamp']);
-				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) . ' and are on this weekend';
+				echo 'Events starting from ' . date('l', $early_start[0]['start_stamp']) .' '. $last_week . ' and are on Today';
 				echo '</h4>';
 				display_events($early_start); 
 			}
+
 			if($friday_start != null){
 				echo '<h4 class="date_heading">';
 				if($friday_start[0]['start_stamp'] <= $today){
@@ -1794,8 +1807,22 @@ function get_events_this_week(){
 			$c = 1;
 
 			if($early_week_start != null){
+				
+				// $d = date('N', $today);
+				if($d == 1){
+					$this_monday_week = $today;
+				}else{
+					$this_monday_week = strtotime('last Monday 00:00');
+				}
+
+				if($early_week_start[0]['start_stamp'] <= $this_monday_week){
+					$last_week = '( Last Week )';
+				}else{
+					$last_week = '';
+				}
+
 				echo '<h4 class="date_heading">';
-				echo 'Events starting from ' . date('l', $early_week_start[0]['start_stamp']) . ' and are on Today';
+				echo 'Events starting from ' . date('l', $early_week_start[0]['start_stamp']) .' '. $last_week . ' and are on Today';
 				echo '</h4>';
 				display_events($early_week_start); 
 			}
@@ -1915,8 +1942,22 @@ function get_events_this_week(){
 }
 
 function get_events_next_week(){
-	$next_monday = strtotime('next Monday 00:00');
-	$following_sunday = strtotime('next Sunday +1 week 23:59');
+	$today = strtotime('today');
+	$d = date('N', $today);
+	
+	if($d == 7){
+		$next_monday = strtotime('next Monday');
+		$following_sunday = strtotime('today +1 week 23:59');
+	}else{
+		$next_monday = strtotime('next Monday 00:00');
+		$following_sunday = strtotime('next Sunday +1 week 23:59');
+	}
+
+	// echo $next_monday . '<br/>';
+	// echo $following_sunday . '<br/>';
+
+	// $next_monday = strtotime('next Monday 00:00');
+	// $following_sunday = strtotime('next Sunday +1 week 23:59');
 	$meta_query = array(
 		'relation' => 'OR',
 		array( // Now -> Sunday
@@ -1948,7 +1989,7 @@ function get_events_next_week(){
 		$sorted = val_sort($post_data, 'start_stamp');
 
 		// echo '<pre>';
-		// print_r($post_data);
+		// print_r($sorted);
 		// echo '</pre>';
 
 		if(!empty($sorted)) {
@@ -2475,8 +2516,22 @@ function clean($string) {
 	$string = strtolower($string);
 	$string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
 	$string = htmlspecialchars_decode($string);
-	$string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
+	$string = preg_replace('/[^A-Za-z0-9\-]/', 'and', $string); // Removes special chars.
 	$string = str_replace('--', '-', $string); // Replaces all '--' with hyphen.
+	return $string;
+}
+
+function clean_cat_name($category_name) {
+
+	// echo var_dump($category_name);
+
+	$string = strtolower($category_name);
+	// echo $string;
+
+	// $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
+	// $string = htmlspecialchars_decode($string);
+	// $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
+	// $string = str_replace('--', '-', $string); // Replaces all '--' with hyphen.
 	return $string;
 }
 

@@ -34,8 +34,8 @@ get_header();
 			<section class="page_listings">
 				<ul>
 					<?php
-						// echo var_dump(get_the_category(get_the_ID()));
-						get_category_listings(get_category_by_slug(single_cat_title('',false))->cat_ID);
+						$cat = clean(single_cat_title('',false));
+						get_category_listings(get_category_by_slug($cat)->cat_ID);
 					?>
 				</ul>
 
